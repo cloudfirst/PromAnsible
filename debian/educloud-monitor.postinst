@@ -1,0 +1,76 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]; then
+   ##############################
+   # install all python libraries
+   #############################
+   pip install /usr/local/webconfig/pip/pytz-2017.2.zip
+   pip install /usr/local/webconfig/pip/*.tar.gz
+
+   pip install /usr/local/webconfig/pip/cronjob/futures-3.1.1-py2-none-any.whl
+   pip install /usr/local/webconfig/pip/cronjob/funcsigs-1.0.2-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/cronjob/APScheduler-3.3.1-py2.py3-none-any.whl
+
+   pip install /usr/local/webconfig/pip/win/setuptools-38.2.1.zip
+   pip install /usr/local/webconfig/pip/win/requests_ntlm-1.1.0-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/xmltodict-0.11.0-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/requests-2.18.4-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/ntlm_auth-1.0.6-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/cryptography-2.1.3.tar.gz
+   pip install /usr/local/webconfig/pip/win/chardet-3.0.4-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/certifi-2017.11.5-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/urllib3-1.22-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/idna-2.6-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/asn1crypto-0.23.0-py2.py3-none-any.whl
+   pip install /usr/local/webconfig/pip/win/pywinrm-0.2.2.tar.gz
+
+   ##############################
+   # configure sudoers
+   ##############################
+   cp /usr/local/webconfig/sudoers      /etc/
+   mkdir -p /home/luhya/.ssh
+   cp /usr/local/webconfig/ssh-config   /home/luhya/.ssh/config
+   cp /usr/local/webconfig/prometheus/* /storage/config/
+   cp /usr/local/webconfig/alertman/*   /storage/config/
+   cp /usr/local/webconfig/snmp/*       /storage/config/
+
+    ##############################
+    # configure apache2
+    ##############################
+    cp /usr/local/webconfig/apache2/envvars  /etc/apache2/
+    cp /usr/local/webconfig/apache2/wsgi     /etc/apache2/sites-available/wsgi.conf
+    a2dissite 000-default
+    a2ensite wsgi
+
+    killall -9 apache2 || true
+    service apache2 start || true
+
+    touch /storage/log/task.log
+    chown -R luhya:luhya /storage
+    chown -R luhya:luhya /usr/local/www
+
+    mkdir -p /etc/cloudmonitor/
+    touch /etc/cloudmonitor/production
+
+    if [ -e /var/log/cloudmonitor ]
+    then
+        echo -e "File exists"
+    else
+        echo -e "File doesnt exists"
+        mkdir -p /var/log/cloudmonitor
+        touch /var/log/cloudmonitor/monitor.log
+        chown -R luhya:luhya /var/log/cloudmonitor
+    fi
+
+    #########################
+    # create mysql database #
+    #########################
+    cd /usr/local/www && python manage.py migrate 
+    cd /usr/local/www && python manage.py makemigrations portal 
+    cd /usr/local/www && python manage.py migrate portal 
+    cd /usr/local/www && python manage.py makemigrations django_apscheduler 
+    cd /usr/local/www && python manage.py migrate django_apscheduler
+
+    cd /usr/local/www/portal/sql && ./init_db.sh || true
+    chown -R luhya:luhya /var/log/cloudmonitor
+fi

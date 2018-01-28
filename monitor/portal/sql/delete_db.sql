@@ -1,0 +1,13 @@
+drop table portal_mn_alert2action ;
+drop table portal_mn_ansible_action ;
+drop table portal_mn_ansible_git_para ;
+drop table portal_mn_devicetype ;
+drop table portal_mn_enterprise_wechat ;
+drop table portal_mn_netdevices ;
+drop table portal_mn_ostypes ;
+drop table portal_mn_servergroup ;
+drop table portal_mn_servers;
+drop table portal_mn_routine_crob_job;
+drop table portal_mn_routine_op_history;
+delete from django_migrations;
+delete from auth_user;

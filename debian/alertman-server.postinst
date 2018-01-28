@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]; then
+    chown -R luhya:luhya /usr/local/daemon || true
+    chmod -R 777 /usr/local/daemon || true
+
+    ln -s -f /usr/local/daemon/alertman/alertmanager     /usr/bin/alertman-server     || true
+    ln -s -f /usr/local/daemon/alertman/amtool           /usr/bin/amtool              || true
+fi

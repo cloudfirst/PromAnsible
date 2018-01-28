@@ -1,0 +1,77 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>云监控管理系统</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+
+        <link rel="stylesheet" href="{% static "portal/css/bootstrap.min.css" %}">
+        <link rel="stylesheet" href="{% static "portal/css/icomoon-social.css" %}">
+
+        <link rel="stylesheet" href="{% static "portal/css/leaflet.css" %}" />
+		<!--[if lte IE 8]>
+		    <link rel="stylesheet" href="{% static "portal/css/leaflet.ie.css" %}" />
+		<![endif]-->
+		<link rel="stylesheet" href="{% static "portal/css/main.css" %}">
+
+        <script src="{% static "portal/js/modernizr-2.6.2-respond-1.1.0.min.js" %}"></script>
+    </head>
+    <body>
+        <!-- Navigation & Logo-->
+        <div class="mainmenu-wrapper">
+	        <div class="container">
+	        	<div class="menuextras">
+		        </div>
+		        <nav id="mainmenu" class="mainmenu">
+					<ul>
+						<li>
+							<h1>云监控管理系统</h1>{% block login %}{% endblock %}
+						</li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+
+            {% block content %}
+            {% endblock %}
+
+	    <!-- Footer -->
+	    <div class="footer">
+	    	<div class="container">
+		    	<div class="row">
+		    		<div class="col-footer col-md-4 col-xs-6">
+		    			<h3>{% trans "Contacts" %}</h3>
+		    			<p class="contact-us-details">
+	        				<b>{% trans "Address" %}:</b><br/>
+	        				<b>{% trans "Phone" %}:</b><br/>
+	        				<b>{% trans "Person" %}:</b><br/>
+	        				<b>{% trans "Email" %}:</b> <a href=""></a>
+
+	        			</p>
+		    		</div>
+		    	</div>
+		    	<div class="row">
+		    		<div class="col-md-12">
+		    			<div class="footer-copyright">&copy; 2017 {% trans "EduCloud. All rights reserved" %}.</div>
+		    		</div>
+		    	</div>
+		    </div>
+	    </div>
+
+        <!-- Javascripts -->
+        <script src="{% static "portal/js/jquery-3.2.1.min.js" %}"></script>
+        <script src="{% static "portal/js/bootstrap.min.js" %}"></script>
+        {% block myjs %}
+        {% endblock %}
+
+    </body>
+</html>

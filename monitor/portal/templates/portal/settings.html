@@ -1,0 +1,515 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+
+{% block content %}
+<!-- Modal for device type -->
+<div class="modal fade" id="devictype_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="device_type_title"></h4>
+          <div class="action" style="display: none;"></div>
+      </div>
+      <div class="modal-body">
+          <input class="form-control" id="new_device_type_name" type="text" placeholder="">
+          <input class="form-control" id="old_device_type_name" type="text" placeholder="" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="save_new_device_type" onclick="save_device_type();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for server group  -->
+<div class="modal fade" id="servergroup_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="server_group_title"></h4>
+          <div class="action" style="display: none;"></div>
+      </div>
+      <div class="modal-body">
+          <p>服务器类型</p>
+          <input class="form-control" id="new_server_group_name" type="text" placeholder="">
+          <p></p>
+          <p>监控端口<small>(如果没有对应的监控模块exporter，设为0)</small></p>
+          <input class="form-control" id="new_server_group_port" type="text" placeholder="">
+          <input class="form-control" id="old_server_group_name" type="text" placeholder="" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="save_new_server_group" onclick="save_server_group();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for os type  -->
+<div class="modal fade" id="ostype_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="os_type_title"></h4>
+          <div class="action" style="display: none;"></div>
+      </div>
+      <div class="modal-body">
+          <input class="form-control" id="new_os_type_name" type="text" placeholder="">
+          <input class="form-control" id="old_os_type_name" type="text" placeholder="" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="save_os_type" onclick="save_os_type();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+          <table id="netdevicetype" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>网络设备类型</th>
+                    <th>
+                        <button type="button" class="btn btn-info btn-block btn-sm">添加</button>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+
+          <!--<iframe class="twofields" src="jt/settings/authpath" frameborder="0"  width="100%" ></iframe>-->
+          <table id="servergroup" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>服务器类型</th>
+                <th>监控端口</th>
+                <th>
+                    <button type="button" class="btn btn-info btn-block btn-sm">添加</button>
+                </th>
+            </tr>
+        </thead>
+<!--        <tfoot>
+            <tr>
+                <th>服务器类型</th>
+            </tr>
+        </tfoot>-->
+        </table>
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+
+          <!--<iframe class="twofields" src="jt/settings/authpath" frameborder="0"  width="100%" ></iframe>-->
+          <table id="ostype" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>操作系统类型</th>
+                <th>
+                    <button type="button" class="btn btn-info btn-block btn-sm">添加</button>
+                </th>
+            </tr>
+        </thead>
+<!--        <tfoot>
+            <tr>
+                <th>操作系统类型</th>
+            </tr>
+        </tfoot>-->
+        </table>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript" language="javascript">
+function sleep(sleepTime) {
+    for (var start = Date.now(); Date.now() - start <= sleepTime;) {}
+}
+
+function save_os_type()
+{
+    var action = $('#ostype_modal .action').text();
+    if (action == "add" )
+    {
+        url = "/portal/api/1.0/ostype/add";
+        postdata = {
+            'os_type' : $('#new_os_type_name').val(),
+        }
+    }
+    if (action == "edit")
+    {
+        url = "/portal/api/1.0/ostype/edit";
+        postdata = {
+            'old_os_type_name' : $('#old_os_type_name').val(),
+            'new_os_type_name' : $('#new_os_type_name').val(),
+        }
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#ostype_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#ostype_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function save_server_group()
+{
+    var action = $('#servergroup_modal .action').text();
+    if (action == "add" )
+    {
+        url = "/portal/api/1.0/servergroup/add";
+        postdata = {
+            'group_name' : $('#new_server_group_name').val(),
+            'group_port' : $('#new_server_group_port').val(),
+        }
+    }
+    if (action == "edit")
+    {
+        url = "/portal/api/1.0/servergroup/edit";
+        postdata = {
+            'old_server_group_name' : $('#old_server_group_name').val(),
+            'new_server_group_name' : $('#new_server_group_name').val(),
+            'new_server_group_port' : $('#new_server_group_port').val(),
+        }
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#servergroup_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#servergroup_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function save_device_type()
+{
+    var action = $('#devictype_modal .action').text();
+    if (action == "add" )
+    {
+        url = "/portal/api/1.0/devicetype/add";
+        postdata = {
+            'type_name' : $('#new_device_type_name').val(),
+        }
+    }
+    if (action == "edit")
+    {
+        url = "/portal/api/1.0/devicetype/edit";
+        postdata = {
+            'old_type_name' : $('#old_device_type_name').val(),
+            'new_type_name' : $('#new_device_type_name').val(),
+        }
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#devictype_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#devictype_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function device_type_add_record()
+{
+    $('#devictype_modal .action').text("add");
+    $('#device_type_title').text("输入新的网络设备类型");
+    $('#new_device_type_name').val("");
+    $('#devictype_modal').modal('show');
+}
+
+function server_group_add_record()
+{
+    $('#servergroup_modal .action').text("add");
+    $('#server_group_title').text("输入新的服务器类型");
+    $('#new_server_group_name').val("");
+    $('#new_server_group_port').val("0");
+    $('#servergroup_modal').modal('show');
+}
+
+function os_type_add_record()
+{
+    $('#ostype_modal .action').text("add");
+    $('#os_type_title').text("输入新的操作系统类型");
+    $('#new_os_type_name').val("");
+    $('#ostype_modal').modal('show');
+}
+
+function device_type_edit_record(edit_record)
+{
+    $('#devictype_modal .action').text("edit");
+    $('#device_type_title').text("编辑网络设备类型");
+    $('#new_device_type_name').val(edit_record['type_name']);
+    $('#old_device_type_name').val(edit_record['type_name']);
+    $('#devictype_modal').modal('show');
+}
+
+function server_group_edit_record(edit_record)
+{
+    $('#servergroup_modal .action').text("edit");
+    $('#server_group_title').text("编辑服务器类型");
+    $('#new_server_group_port').val(edit_record['group_port']);
+    $('#new_server_group_name').val(edit_record['group_name']);
+    $('#old_server_group_name').val(edit_record['group_name']);
+    $('#servergroup_modal').modal('show');
+}
+
+function os_type_edit_record(edit_record)
+{
+    $('#ostype_modal .action').text("edit");
+    $('#os_type_title').text("编辑操作系统类型");
+    $('#new_os_type_name').val(edit_record['os_type']);
+    $('#old_os_type_name').val(edit_record['os_type']);
+    $('#ostype_modal').modal('show');
+}
+
+function del_record(table_name, delete_record)
+{
+    if (confirm('你确定要删除这条记录吗？')) {
+        url = "/portal/api/1.0/"+table_name+"/del";
+        $.post(url, delete_record, function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+                items[key] = val;
+            });
+            if ( items['Result'] != 'OK' ) {
+                alert(items['error']);
+                return ;
+            } else {
+                location.reload();
+            }
+        });
+    }
+}
+
+$(document).ready(function() {
+    var table1 = $('#netdevicetype').DataTable({
+        "columnDefs": [
+            {
+                "searchable": false,
+                "orderable":  false,
+                "width":      "1%",
+                "targets":    0,
+            },
+            {
+               // "searchable": false,
+               // "orderable":  false,
+                "width":      "58",
+                "targets":    -1,
+                "defaultContent": '<button type="button" class="btn btn-primary btn-xs">编辑</button><button type="button" class="btn btn-danger btn-xs">删除</button></p>'
+            },
+        ],
+        "searching": false,
+        "paging":    false,
+        "ordering":  false,
+        "info":      false,
+        "stateSave": true,
+
+        "processing": true,
+        "serverSide": true,
+        "ajax":       "/portal/api/1.0/devicetype/list/"
+    });
+
+    table1.on( 'draw.dt', function () {
+        table1.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+
+    $('#netdevicetype tbody').on( 'click', '.btn-primary', function () {
+        var data = table1.row( $(this).parents('tr') ).data();
+        para = {
+            "type_name" : data[1],
+        }
+        device_type_edit_record(para);
+    } );
+
+    $('#netdevicetype tbody').on( 'click', '.btn-danger', function () {
+        var data = table1.row( $(this).parents('tr') ).data();
+        para = {
+            "type_name" : data[1],
+        }
+        del_record("devicetype", para);
+    } );
+
+    $('#netdevicetype').on( 'click', '.btn-block', function () {
+        device_type_add_record();
+    } );
+
+    var table2 = $('#servergroup').DataTable( {
+        "columnDefs": [
+            {
+                "searchable": false,
+                "orderable":  false,
+                "width":      "1%",
+                "targets":    0,
+            },
+            {
+               // "searchable": false,
+               // "orderable":  false,
+                "width":      "58",
+                "targets":    -1,
+                "defaultContent": '<button type="button" class="btn btn-primary btn-xs">编辑</button><button type="button" class="btn btn-danger btn-xs">删除</button></p>'
+            },
+        ],
+        "searching": false,
+        "paging":    false,
+        "ordering":  false,
+        "info":      false,
+        "stateSave": true,
+
+        "processing": true,
+        "serverSide": true,
+        "ajax":       "/portal/api/1.0/servergroup/list/"
+    });
+
+    table2.on( 'draw.dt', function () {
+        table2.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+
+    $('#servergroup tbody').on( 'click', '.btn-primary', function () {
+        var data = table2.row( $(this).parents('tr') ).data();
+        para = {
+            "group_name" : data[1],
+            "group_port" : data[2]
+        }
+        server_group_edit_record(para);
+    } );
+
+    $('#servergroup tbody').on( 'click', '.btn-danger', function () {
+        var data = table2.row( $(this).parents('tr') ).data();
+        para = {
+            "group_name" : data[1],
+        }
+        del_record("servergroup", para);
+    } );
+
+    $('#servergroup').on( 'click', '.btn-block', function () {
+        server_group_add_record();
+    } );
+
+    var table3 = $('#ostype').DataTable({
+        "columnDefs": [
+            {
+                "searchable": false,
+                "orderable":  false,
+                "width":      "1%",
+                "targets":    0,
+            },
+            {
+               // "searchable": false,
+               // "orderable":  false,
+                "width":      "58",
+                "targets":    -1,
+                "defaultContent": '<button type="button" class="btn btn-primary btn-xs">编辑</button><button type="button" class="btn btn-danger btn-xs">删除</button></p>'
+            },
+        ],
+        "searching": false,
+        "paging":    false,
+        "ordering":  false,
+        "info":      false,
+        "stateSave": true,
+
+        "processing": true,
+        "serverSide": true,
+        "ajax":       "/portal/api/1.0/ostype/list/"
+    });
+
+    table3.on( 'draw.dt', function () {
+        table3.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            cell.innerHTML = i+1;
+        } );
+    } ).draw();
+
+    $('#ostype tbody').on( 'click', '.btn-primary', function () {
+        var data = table3.row( $(this).parents('tr') ).data();
+        para = {
+            "os_type" : data[1],
+        }
+        os_type_edit_record(para);
+    } );
+
+    $('#ostype tbody').on( 'click', '.btn-danger', function () {
+        var data = table3.row( $(this).parents('tr') ).data();
+        para = {
+            "os_type" : data[1],
+        }
+        del_record("ostype", para);
+    } );
+
+    $('#ostype').on( 'click', '.btn-block', function () {
+        os_type_add_record();
+    } );
+
+
+} );
+</script>
+{% endblock %}
+
+
+<!--
+        language: {
+                "sProcessing":   "处理中...",
+                "sLengthMenu":   "显示 _MENU_ 项结果",
+                "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix":  "",
+                "sSearch":       "搜索:",
+                "sUrl":          "",
+                "sEmptyTable":     "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands":  ",",
+                "oPaginate": {
+                    "sFirst":    "首页",
+                    "sPrevious": "上页",
+                    "sNext":     "下页",
+                    "sLast":     "末页"
+                },
+                "oAria": {
+                    "sSortAscending":  ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+        },-->

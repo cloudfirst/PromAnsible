@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]; then
+    chown -R luhya:luhya /usr/local/daemon || true
+    chmod -R 777 /usr/local/daemon || true
+
+    ln -s -f /usr/local/daemon/prometheus/prometheus     /usr/bin/prometheus-server     || true
+    ln -s -f /usr/local/daemon/prometheus/promtool       /usr/bin/promtool              || true
+fi

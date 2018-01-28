@@ -1,0 +1,76 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel">
+         <input type="checkbox" id="toggle-1" data-toggle="toggle" data-on="可写" data-off="只读">
+         <button type="button"  id="save" class="btn btn-primary"  onclick="save_yaml();" style="display: none;">保存</button>
+      </div>
+   </div>
+</div>
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+          <div class="alert alert-success" style="display: none;"></div>
+         <div class="alert alert-danger"  style="display: none;"></div>
+        <iframe id="myiframe" src="/portal/config/yaml/editor/alertman" frameborder="0" width="100%" heigth="100%">
+        </iframe>
+      </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript" language="javascript">
+function save_yaml()
+{
+   var $f = $("#myiframe");
+   src = $f[0].contentWindow.get_yaml();
+
+   url = "/portal/api/1.0/save/alertman";
+   postdata = {
+      "src": src,
+   };
+   $.post(url, postdata, function (data) {
+      var items = [];
+      $.each(data, function (key, val) {
+          items[key] = val;
+      });
+      if ( items['Result'] != 'OK' ) {
+          $(".alert-danger").text("语法检查失败:\n"+items['error']);
+          $(".alert-danger").show();
+          $(".alert-success").hide();
+      } else {
+          $(".alert-success").text("语法检查成功，保存成功:\n"+items['error'])
+          $(".alert-danger").hide();
+          $(".alert-success").show();
+      }
+   });
+}
+
+$(document).ready(function() {
+    $('#myiframe').css('height', $(window).height()+'px');
+
+    $('#toggle-1').bootstrapToggle({
+      on: '可写',
+      off: '只读'
+    });
+
+    $('#toggle-1').change(function() {
+       var flag = $("#save").is(":visible");
+       var $f = $("#myiframe");
+       if (flag) {
+            $("#save").hide();
+            $f[0].contentWindow.setreadonly();
+            $(".alert-success").hide();
+            $(".alert-danger").hide();
+       } else {
+            $("#save").show();
+            $f[0].contentWindow.setreadwrite();
+       }
+    })
+});
+</script>
+{% endblock %}

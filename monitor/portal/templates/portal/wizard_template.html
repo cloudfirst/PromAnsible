@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="{% static "portal/css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "portal/SmartWizard/src/css/smart_wizard.css" %}">
+    <link rel="stylesheet" href="{% static "portal/SmartWizard/src/css/smart_wizard_theme_arrows.css" %}">
+    <link rel="stylesheet" href="{% static "portal/DataTables-1.10.15/media/css/jquery.dataTables.min.css" %}" >
+    <link rel="stylesheet" href="{% static "portal/jquery-cron/cron/jquery-cron.css"  %}" >
+    <link rel="stylesheet" href="{% static "portal/jquery-cron/gentleSelect/jquery-gentleSelect.css" %}"/>
+    <!--<link href="{% static "portal/css/sb-admin-2.css" %}" rel="stylesheet">-->
+
+    {% block mycss %}
+    {% endblock %}
+
+    <body>
+    {% block content %}
+    {% endblock %}
+    </body>
+
+    <script src="{% static "portal/js/jquery-3.2.1.min.js" %}"></script>
+    <script src="{% static "portal/js/bootstrap.min.js" %}"></script>
+    <!--<script src="{% static "portal/js/sb-admin-2.js" %}"></script>-->
+    <script src="{% static "portal/SmartWizard/src/js/jquery.smartWizard.js" %}"></script>
+    <script src="{% static "portal/DataTables-1.10.15/media/js/jquery.dataTables.min.js" %}"></script>
+    <script src="{% static "portal/jquery-cron/cron/jquery-cron.js" %}"></script>
+    <script src="{% static "portal/jquery-cron/gentleSelect/jquery-gentleSelect.js" %}"></script>
+    <script>
+    function show_log_window() {
+        var log_url = window.location.protocol + '//' + window.location.hostname + ':8888'
+        window.open(log_url, "console_log_window", "height=800,width=800");
+    }
+    </script>
+    {% block myjs %}
+    {% endblock %}
+
+</head>
+</html>
+
+

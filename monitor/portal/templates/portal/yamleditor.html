@@ -1,0 +1,61 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Editor</title>
+  <style type="text/css" media="screen">
+    body {
+        overflow: hidden;
+    }
+
+    #editor {
+        margin: 0;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+  </style>
+</head>
+<body>
+
+<pre id="editor">
+  {{ source_code }}
+</pre>
+
+<script src="/static/portal/ace/js/ace.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" language="javascript">
+function get_yaml()
+{
+    var editor = ace.edit("editor");
+    return editor.getValue();
+};
+
+function setreadwrite()
+{
+    var editor = ace.edit("editor");
+    editor.setReadOnly(false);
+    editor.setTheme("ace/theme/tomorrow_night_eighties");
+    editor.session.setMode("ace/mode/yaml");
+};
+
+function setreadonly()
+{
+    var editor = ace.edit("editor");
+    editor.setReadOnly(true);
+    editor.setTheme("ace/theme/xcode");
+    editor.session.setMode("ace/mode/yaml");
+    //editor.renderer.$cursorLayer.element.style.display = "none"
+};
+</script>
+<script>
+    setreadonly();
+</script>
+
+</body>
+</html>

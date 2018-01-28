@@ -1,0 +1,105 @@
+{% load i18n %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="{% static "portal/css/bootstrap.min.css"  %}" >
+    <link rel="stylesheet" href="{% static "portal/css/icomoon-social.css" %}">
+    <link rel="stylesheet" href="{% static "portal/css/leaflet.css" %}" />
+		<!--[if lte IE 8]>
+		    <link rel="stylesheet" href="{% static "portal/css/leaflet.ie.css" %}" />
+		<![endif]-->
+		<link rel="stylesheet" href="{% static "portal/css/main.css" %}">
+
+    <script src="{% static "portal/js/jquery-3.2.1.min.js" %}"></script>
+    <script src="{% static "portal/js/bootstrap.min.js" %}"></script>
+
+    <script type="text/javascript">
+    function verify_serverip() {
+        var hostip = $('#hostip').val();
+        var url = 'http://' + hostip;
+        var left = ($(window).width() / 2) - (800 / 2);
+        var top = ($(window).height() / 2) - (600 / 2);
+        window.open(url, '', 'height=760,width=550,left=' + left + ',top=' + top);
+    }
+
+    function goto_homepage() {
+        var hostip = $('#hostip').val();
+        var url = "/portal/config";
+        postdata = {
+            'clcip': hostip,
+        };
+        $.post(url, postdata, function (data) {
+            items = [];
+            $.each(data, function (key, val) {
+                items[key] = val;
+            });
+            if ( items['Result'] != 'OK' ) {
+                alert(items['error']);
+            } else {
+                window.location = "/";
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#verify").click(function(){
+            verify_serverip();
+        });
+
+        $("#gohome").click(function(){
+            goto_homepage();
+        });
+    });
+    </script>
+    <title></title>
+</head>
+<body>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2> 需监控的服务器地址 </h2>
+            </div>
+
+            <div class="panel-body">
+                <!-- /.row (nested) -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <label>输入服务器IP</label>
+                        <!-- /.col-lg-6 (nested) -->
+                        <div class="well well-sm">
+
+                                <div role="form">
+                                    <div class="form-group">
+                                        <input id="hostip" class="form-control" type="text" >
+                                    </div>
+                                </div>
+                                <button id="verify"  class="btn btn-default">验证服务器地址</button>
+                                <button id="gohome"  class="btn btn-primary">确认</button>
+
+                        </div>
+                    </div>
+
+                    <!-- /.col-lg-6 (nested) -->
+                </div>
+
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+
+</body>
+</html>

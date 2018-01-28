@@ -1,0 +1,258 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block mycss %}
+<link rel="stylesheet" href="{% static "portal/jquery-upload-file/css/uploadfile.css" %}">
+{% endblock %}
+
+{% block content %}
+<!-- Modal for device type -->
+<div class="modal fade" id="ansible_inventory_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="ansible_inventory_title">Ansible自动管理的机器清单</h4>
+      </div>
+      <div class="modal-body">
+          <pre id="inventory_json" >
+          </pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="git_url_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="git_url_title">Ansible自动管理代码仓库的地址</h4>
+      </div>
+      <div class="modal-body">
+          <input class="form-control" id="git_url" type="text" placeholder="https://github.com/ansible-semaphore/semaphore.git">
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="save_git_url" onclick="save_git_url();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+       <div class="panel ">
+           <button type="button" class="btn btn-info"    onclick="display_inventory();">查看管理的机器清单</button>
+           <button type="button" class="btn btn-primary" onclick="set_git_url();">设置Git代码仓库</button>
+           <button type="button" class="btn btn-danger"  onclick="do_git_pull();">提取最新的Git代码</button>
+           <div class="pull-right">
+             <button type="button" class="btn btn-success" onclick="show_log_window();">显示日志</button>
+         </div>
+       </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+       <div class="panel panel-default">
+           <div class="panel-heading">
+               <h4>日常运维任务</h4>
+           </div>
+           <div class="panel-body">
+               <ul class="chat">
+                {% for r in roles.routine %}
+                <li class="left clearfix">
+                    <span class="chat-img pull-left">
+                        <img src="{% static "portal/img/routine.png" %}" alt="User Avatar" class="img-circle" width="80%">
+                    </span>
+                    <span class="chat-img pull-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                定期运行
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#" onclick="select_devops_schedule('{{ r.name }}')">设置运行时间和频率</a></li>
+                                <li class="divider"></li>
+                                {% for s in r.schedule %}
+                                <li><a href="#">{{ s }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+                                运行一次
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                <li><a href="#" onclick="select_devops_target('{{ r.name }}')">选择运维目标</a></li>
+                                <li class="divider"></li>
+                                {% for h in r.histories %}
+                                <li><a href="#" onclick="run_once('{{ r.name }}', '{{ h }}')">{{ h }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                    </span>
+                    <div class="chat-body clearfix">
+                        <div class="header">
+                            <strong class="primary-font"> {{ r.name }}</strong>
+                        </div>
+                        <p>
+                            {{ r.desc | safe }}
+                        </p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+           </div>
+
+       </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+
+       <div class="panel panel-default">
+           <div class="panel-heading">
+               <h4>警报处理任务</h4>
+           </div>
+           <div class="panel-body">
+                <ul class="chat">
+                {% for r in roles.alert %}
+                <li class="left clearfix">
+                    <span class="chat-img pull-left">
+                        <img src="{% static "portal/img/handler.png" %}" alt="User Avatar" class="img-circle" width="80%">
+                    </span>
+                    <span class="chat-img pull-right">
+                    </span>
+                    <div class="chat-body clearfix">
+                        <div class="header">
+                            <strong class="primary-font">{{ r.name }}</strong>
+                        </div>
+                        <p>
+                            {{ r.desc | safe }}
+                        </p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+           </div>
+       </div>
+   </div>
+</div>
+{% endblock %}
+
+{% block myjs %}
+<script src="{% static "portal/jquery-upload-file/js/jquery.uploadfile.min.js" %}" ></script>
+<script type="text/javascript" language="javascript">
+function run_once(routine_name, target)
+{
+    //show_log_window();
+
+    args = target.split("/");
+    post_data = {
+        'op'   :  routine_name,
+        'group':  args[0],
+        'entity': args[1],
+    }
+    var url = "/portal/api/1.0/ansible/routine/run_once";
+    $.post(url, post_data, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] != 'OK' ) {
+            alert(items['error']);
+        }
+    });
+}
+
+function select_devops_schedule(routine_name)
+{
+    var url = "/portal/wizard/set/devops/schedule/" + routine_name;
+    window.open(url, "设置运行时间和频率", "height=400,width=800");
+}
+
+function select_devops_target(routine_name)
+{
+    var url = "/portal/wizard/set/devops/target/" + routine_name;
+    window.open(url, "选择运维目标", "height=400,width=800");
+}
+
+function display_inventory()
+{
+    var url = "/portal/api/1.0/ansible/gen/inventory";
+    var postdata = {
+        'encode': 'html',
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            data = items['data']
+            $("#inventory_json").text(data);
+            $('#ansible_inventory_modal').modal('show');
+        } else {
+            alert("读取管理的机器清单失败，请重试！");
+        }
+    });
+}
+
+function set_git_url()
+{
+    $('#git_url_modal').modal('show');
+}
+
+function save_git_url()
+{
+    var url = "/portal/api/1.0/ansible/set/giturl";
+    var postdata = {
+        'git_url':  $("#git_url").val(),
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            data = items['data']
+            $('#git_url_modal .alert-success').css("display", "block");
+            location.reload();
+        }
+    });
+}
+
+function do_git_pull()
+{
+    //show_log_window();
+
+    var url = "/portal/api/1.0/ansible/do/gitpull";
+    var postdata = {}
+
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            data = items['data']
+        }
+    });
+}
+
+$(document).ready(function() {
+    $("#git_url").val("{{ git_url }}")
+});
+</script>
+{% endblock %}

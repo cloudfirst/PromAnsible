@@ -1,0 +1,328 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+
+{% block content %}
+<!-- Modal for device type -->
+<div class="modal fade" id="servers_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="servers_title"></h4>
+          <div class="action" style="display: none;"></div>
+      </div>
+      <div class="modal-body">
+          <label>服务器IP地址</label>
+          <input class="form-control newdata" id="sip"      type="text" placeholder="">
+          <input class="form-control"         id="old_sip"  type="text" placeholder="" style="display: none;">
+          <p></p>
+
+          <label>服务器MAC地址</label>
+          <input class="form-control newdata" id="smac"  type="text" placeholder="">
+          <p></p>
+
+          <label>操作系统类型</label>
+          <select class="form-control newdata" id="sostype">
+                {% for os in sos %}
+                    <option value="{{ os }}">{{ os }}</option>
+                {% endfor %}
+          </select>
+          <p></p>
+
+          <label>服务器型号</label>
+          <input class="form-control newdata" id="smodel"   type="text" placeholder="">
+          <p></p>
+
+          <label>管理员账号</label>
+          <input class="form-control newdata" id="sadmin"   type="text" placeholder="">
+          <p></p>
+
+          <label>管理员密码(*输入为空密码保持不变*)</label>
+          <input class="form-control newdata" id="spasswd"  type="password" placeholder="">
+          <p></p>
+
+          <label>分组1</label>
+          <select class="form-control newdata" id="sgroup1">
+                <option value=""></option>
+                {% for group in sgroups %}
+                    <option value="{{ group }}">{{ group }}</option>
+                {% endfor %}
+          </select>
+          <p></p>
+
+          <label>分组2</label>
+          <select class="form-control newdata" id="sgroup2">
+                <option value=""></option>
+                {% for group in sgroups %}
+                    <option value="{{ group }}">{{ group }}</option>
+                {% endfor %}
+          </select>
+          <p></p>
+
+          <label>分组3</label>
+          <select class="form-control newdata" id="sgroup3">
+                <option value=""></option>
+                {% for group in sgroups %}
+                    <option value="{{ group }}">{{ group }}</option>
+                {% endfor %}
+          </select>
+          <p></p>
+
+          <label>分组4</label>
+          <select class="form-control newdata" id="sgroup4">
+                <option value=""></option>
+                {% for group in sgroups %}
+                    <option value="{{ group }}">{{ group }}</option>
+                {% endfor %}
+          </select>
+
+          <label>备注</label>
+          <textarea class="form-control newdata" id="smemo"  rows="4"></textarea>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-info" id="save_servers" onclick="save_servers();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel">
+         <button type="button" class="btn btn-info"    onclick="add_servers();">添加</button>
+         <button type="button" class="btn btn-primary" onclick="edit_servers();">编辑</button>
+         <button type="button" class="btn btn-danger"  onclick="del_servers();">删除</button>
+         <div class="pull-right">
+             <button type="button" class="btn btn-success" onclick="gen_yaml();">生成监控配置文件</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+          <table id="servers" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>IP地址</th>
+                    <th>MAC地址</th>
+                    <th>操作系统</th>
+                    <th>服务器型号</th>
+                    <th>管理账号</th>
+                    <th>分组</th>
+                    <th>备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recs %}
+                  <tr>
+                      <td>{{ rec.sip }}</td>
+                      <td>{{ rec.smac }}</td>
+                      <td>{{ rec.sostype }}</td>
+                      <td>{{ rec.smodel }}</td>
+                      <td>{{ rec.sadmin }}</td>
+                      <td>
+                          {{ rec.sgroup }}
+                      </td>
+                      <td>{{ rec.memo   }}</td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>IP地址</th>
+                    <th>MAC地址</th>
+                    <th>操作系统</th>
+                    <th>服务器</th>
+                    <th>管理账号</th>
+                    <th>分组</th>
+                    <th>备注</th>
+                </tr>
+            </tfoot>
+        </table>
+      </div>
+   </div>
+</div>
+
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript" language="javascript">
+var table1;
+
+function gen_yaml()
+{
+    url = "/portal/config/yaml/generator";
+    postdata = {}
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            window.location.href = "/portal/config/prometheus";
+        }
+    });
+}
+
+function save_servers()
+{
+    var action = $('#servers_modal .action').text();
+    if (action == "add" )
+    {
+        url = "/portal/api/1.0/servers/add";
+        postdata = {
+            'sip' :         $('#sip').val(),
+            'smac':         $('#smac').val(),
+            'sostype':      $('#sostype').val(),
+            'smodel':       $('#smodel').val(),
+            'sadmin':       $('#sadmin').val(),
+            'spasswd':      $('#spasswd').val(),
+            'sgroup1':      $('#sgroup1').val(),
+            'sgroup2':      $('#sgroup2').val(),
+            'sgroup3':      $('#sgroup3').val(),
+            'sgroup4':      $('#sgroup4').val(),
+            'smemo':        $('#smemo').val(),
+        }
+    }
+    if (action == "edit")
+    {
+        url = "/portal/api/1.0/servers/edit";
+        postdata = {
+            'old_sip':      $('#old_sip').val(),
+            'sip' :         $('#sip').val(),
+            'smac':         $('#smac').val(),
+            'sostype':      $('#sostype').val(),
+            'smodel':       $('#smodel').val(),
+            'sadmin':       $('#sadmin').val(),
+            'spasswd':      $('#spasswd').val(),
+            'sgroup1':      $('#sgroup1').val(),
+            'sgroup2':      $('#sgroup2').val(),
+            'sgroup3':      $('#sgroup3').val(),
+            'sgroup4':      $('#sgroup4').val(),
+            'smemo':        $('#smemo').val(),
+        }
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#servers_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#servers_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function add_servers()
+{
+    $('#servers_modal .action').text("add");
+    $('#servers_title').text("输入新的服务器信息");
+    $('.newdata').val("");
+    $('#servers_modal').modal('show');
+}
+
+function edit_servers()
+{
+    $('#servers_modal .action').text("edit");
+    $('#servers_title').text("编辑服务器信息");
+
+    var data = table1.row('.selected').data();
+    $('#old_sip').val(data[0]);
+
+    $('#sip').val(data[0]);
+    $('#smac').val(data[1]);
+    $('#sostype').val(data[2]);
+    $('#smodel').val(data[3]);
+    $('#sadmin').val(data[4]);
+    $('#spasswd').val("");
+    $('#smemo').val(data[6]);
+
+    groups_str = data[5].split(",");
+    for (var index=0; index<groups_str.length; index++)
+    {
+        $('#sgroup'+(index+1)).val(groups_str[index]);
+    }
+
+    $('#servers_modal').modal('show');
+}
+
+function del_servers()
+{
+    if (confirm('你确定要删除这条记录吗？')) {
+        url = "/portal/api/1.0/servers/del";
+        var data = table1.row('.selected').data();
+        var delete_record = {
+            "sip" : data[0],
+        };
+
+        $.post(url, delete_record, function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+                items[key] = val;
+            });
+            if ( items['Result'] != 'OK' ) {
+                alert(items['error']);
+                return ;
+            } else {
+                location.reload();
+            }
+        });
+    }
+}
+
+$(document).ready(function() {
+    $(".btn-primary").hide();
+    $(".btn-danger").hide();
+
+    table1 = $('#servers').DataTable({
+        language: {
+                "sProcessing":   "处理中...",
+                "sLengthMenu":   "显示 _MENU_ 项结果",
+                "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix":  "",
+                "sSearch":       "搜索:",
+                "sUrl":          "",
+                "sEmptyTable":     "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands":  ",",
+                "oPaginate": {
+                    "sFirst":    "首页",
+                    "sPrevious": "上页",
+                    "sNext":     "下页",
+                    "sLast":     "末页"
+                },
+                "oAria": {
+                    "sSortAscending":  ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+        },
+        "stateSave":   true,
+    });
+
+    $('#servers tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            $(".btn-primary").hide();
+            $(".btn-danger").hide();
+        } else {
+            table1.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            $(".btn-primary").show();
+            $(".btn-danger").show();
+        }
+    } );
+});
+</script>
+{% endblock %}

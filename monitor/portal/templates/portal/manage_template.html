@@ -1,0 +1,197 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>管理配置控制台</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static "portal/css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static "portal/css/plugins/metisMenu/metisMenu.min.css" %}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static "portal/css/sb-admin-2.css" %}" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="{% static "portal/css/plugins/morris.css" %}" rel="stylesheet">
+    <link href="{% static "portal/css/plugins/timeline.css" %}" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="{% static "portal/font-awesome-4.1.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+
+    <link href="{% static "portal/DataTables-1.10.15/media/css/jquery.dataTables.min.css" %}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link href="{% static "portal/css/bootstrap-toggle.min.css" %}" rel="stylesheet">
+    {% block mycss %}
+    {% endblock %}
+
+</head>
+
+<body>
+
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index">管理配置控制台</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <div id="uid"   style="display: none;">{{ uid }}</div>
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="showname">{{ showname }}
+                        <i class="fa fa-user fa-fw"></i><i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a a href="JavaScript:void(0);" onclick="editPassword();"><i class="fa fa-gear fa-fw"></i>修改密码</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="/portal/user_logout"><i class="fa fa-sign-out fa-fw"></i>注销</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
+                            <a href="/portal/settings"><i class="fa fa-globe fa-fw"></i>系统参数设置</a>
+                        </li>
+
+                        <li>
+                            <a href="/portal/netdevices"><i class="fa fa-user fa-fw"></i>网络设备管理</a>
+                            <!-- /.nav-second-level -->
+                        </li>
+
+                        <li>
+                            <a href="/portal/servers"><i class="fa fa-hdd-o fa-fw"></i>服务器管理</a>
+                        </li>
+
+                        <li>
+                             <a href="#"><i class="fa fa-h-square fa-fw"></i>监控参数设置<span class="fa arrow"></span></a>
+                             <ul class="nav nav-second-level">
+
+                                 <li>
+                                    <a href="/portal/config/prometheus"><i class="fa fa-globe fa-fw"></i>监控服务设置</a>
+                                </li>
+                                 <li>
+                                    <a href="/portal/config/alertman"><i class="fa fa-globe fa-fw"></i>报警服务设置</a>
+                                </li>
+                                <li>
+                                    <a href="/portal/config/alertrule"><i class="fa fa-globe fa-fw"></i>报警规则设置</a>
+                                </li>
+                                  <li>
+                                    <a href="/portal/config/snmp"><i class="fa fa-globe fa-fw"></i>SNMP监控设置</a>
+                                </li>
+
+                            </ul>
+                         </li>
+
+                        <li>
+
+                            <a href="#"><i class="fa fa-hdd-o fa-fw"></i>报警参数设置<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <!--<li>
+                                    <a href="/portal/emailman"><i class="fa fa-hdd-o fa-fw"></i>电子邮箱设置</a>
+                                </li>-->
+                                <li>
+                                    <a href="/portal/wechatman"><i class="fa fa-hdd-o fa-fw"></i>微信企业号设置</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="/portal/ansibleman"><i class="fa fa-cogs fa-fw"></i>自动化管理设置</a>
+                        </li>
+
+                        <li>
+                            <a href="/portal/apscheduleman"><i class="fa fa-cogs fa-fw"></i>计划任务管理</a>
+                        </li>
+
+                        <li>
+                            <a href="/portal/aiman"><i class="fa fa-tasks fa-fw"></i>报警自动处理</a>
+                        </li>
+
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="page-header">{{ dashboard }}</h2>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            {% block content %}
+            {% endblock %}
+        </div>
+        <!-- /#page-wrapper -->
+    </div>
+    
+    <script src="{% static "portal/js/jquery-3.2.1.min.js" %}"></script>
+    <script src="{% static "portal/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "portal/js/bootstrap-toggle.min.js" %}"></script>
+    <script src="{% static "portal/js/sb-admin-2.js" %}"></script>
+    <script src="{% static "portal/js/plugins/metisMenu/metisMenu.min.js" %}"></script>
+    <script src="{% static "portal/js/plugins/morris/raphael.min.js" %}"></script>
+    <script src="{% static "portal/js/plugins/morris/morris.min.js" %}"></script>
+   
+    <script src="{% static "portal/js/plugins/flot/excanvas.min.js" %}"></script>
+    <script src="{% static "portal/js/plugins/flot/jquery.flot.js" %}"></script>
+    <script src="{% static "portal/js/plugins/flot/jquery.flot.pie.js" %}"></script>
+    <script src="{% static "portal/js/plugins/flot/jquery.flot.resize.js" %}"></script>
+    <script src="{% static "portal/js/plugins/flot/jquery.flot.tooltip.min.js" %}"></script>
+
+    <script src="{% static "portal/DataTables-1.10.15/media/js/jquery.dataTables.min.js" %}"></script>
+    {% block myjs %}
+    {% endblock %}
+
+    <script>
+    function show_log_window() {
+        var log_url = window.location.protocol + '//' + window.location.hostname + ':8888'
+        window.open(log_url, "console_log_window", "height=800,width=800");
+    }
+
+    function editPassword() {
+        u_name = $('#uid').text()
+        url="/portal/user/edit_password/" + u_name;
+        var left = ($(window).width() / 2) - (800 / 2);
+        var top = ($(window).height() / 2) - (600 / 2);
+        window.open(url, '', 'height=550,width=650,left=' + left + ',top=' + top);
+    }
+    </script>
+
+
+
+</body>
+
+</html>

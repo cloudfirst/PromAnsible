@@ -1,0 +1,92 @@
+{% extends "portal/portal_template.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block content %}
+        <!-- Page Title -->
+		<div class="section section-breadcrumbs">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h1>管理员登录</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+        <div class="section section-white">
+	    	<div class="container">
+				<div class="row ">
+                    <div class="col-sm-6">
+                        <div class="portfolio-image">
+                            <img src="{% static "portal/img/management-systems.jpg" %}" height="100%" width="100%" >
+                        </div>
+                    </div>
+
+					<div class="col-sm-5">
+						<div class="basic-login">
+							<form role="form" role="form">
+                                <div id="tips"><p id="erro_msg" style="color:red"></p></div>
+								<div class="form-group">
+		        				 	<label for="email"><i class="icon-user"></i> <b>用户名</b></label>
+									<input class="form-control" id="email" type="text" placeholder="">
+								</div>
+								<div class="form-group">
+		        				 	<label for="passwd"><i class="icon-lock"></i> <b>密码</b></label>
+									<input class="form-control" id="passwd" type="password" placeholder="">
+								</div>
+								<div class="form-group">
+									<!--<label class="checkbox">
+										<input type="checkbox"> Remember me
+									</label>-->
+									<!--<a href="page-password-reset.html" class="forgot-password">Forgot password?</a>-->
+									<button type="button" id="logon_btn" class="btn pull-right">登录</button>
+									<div class="clearfix"></div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+{% endblock %}
+
+{% block myjs %}
+<script>
+$(document).ready(function () {
+    $("#logon_btn").click(function () {
+        vemail = $("#email").val();
+        secrete = $("#passwd").val();
+        if (vemail == "")
+        {
+            //$("#erro_msg").text("{% trans "Please input user email address !" %}");
+            $("#erro_msg").text("请输入用户名!");
+        }
+        else if (secrete == "")
+        {
+            //$("#erro_msg").text("{% trans "Please input user password !" %}");
+            $("#erro_msg").text("请输入密码!");
+        }
+        else
+        {
+            url = "/portal/api/1.0/admin_login";
+            $.post(url, { email: vemail, password: secrete }, function (data) {
+                var items = [];
+                $.each(data, function (key, val) {
+                    items[key] = val
+                });
+                if (items['status'] == 'SUCCESS') {
+                    window.location.replace(items['url']);
+                } else {
+                    $("#erro_msg").text(items['reason']);
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+.icon-google-plus,.icon-facebook,.icon-twitter,.icon-vimeo2,.icon-flickr,.icon-picassa,.icon-dribbble,.icon-github,.icon-wordpress,.icon-blogger,.icon-tumblr,.icon-soundcloud,.icon-linkedin,.icon-lastfm,.icon-stumbleupon,.icon-pinterest {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	background-image: url(../img/coming-soon-social.png);
+	background-repeat: no-repeat;
+}
+.icon-google-plus {
+	background-position: 0 0;
+}
+.icon-facebook {
+	background-position: -64px 0;
+}
+.icon-twitter {
+	background-position: -128px 0;
+}
+.icon-vimeo2 {
+	background-position: -192px 0;
+}
+.icon-flickr {
+	background-position: -256px 0;
+}
+.icon-picassa {
+	background-position: -320px 0;
+}
+.icon-dribbble {
+	background-position: -384px 0;
+}
+.icon-github {
+	background-position: -448px 0;
+}
+.icon-wordpress {
+	background-position: -512px 0;
+}
+.icon-blogger {
+	background-position: -576px 0;
+}
+.icon-tumblr {
+	background-position: -640px 0;
+}
+.icon-soundcloud {
+	background-position: -704px 0;
+}
+.icon-linkedin {
+	background-position: -768px 0;
+}
+.icon-lastfm {
+	background-position: -832px 0;
+}
+.icon-stumbleupon {
+	background-position: -896px 0;
+}
+.icon-pinterest {
+	background-position: -960px 0;
+}

@@ -1,0 +1,243 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+
+{% block content %}
+<!-- Modal for device type -->
+<div class="modal fade" id="netdevice_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="net_device_title"></h4>
+          <div class="action" style="display: none;"></div>
+      </div>
+      <div class="modal-body">
+          <label>网络设备类型</label>
+          <select class="form-control newdata" id="new_net_device_type">
+                {% for type in deviceTypes %}
+                    <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+          </select>
+          <p></p>
+          <label>网络设备IP地址</label>
+          <input class="form-control newdata" id="new_net_device_ip"   type="text" placeholder="">
+          <p></p>
+          <label>网络设备MAC地址</label>
+          <input class="form-control newdata" id="new_net_device_mac"  type="text" placeholder="">
+          <label>备注</label>
+          <textarea class="form-control newdata" id="new_net_device_memo"  rows="4"></textarea>
+          <input class="form-control" id="old_net_device_ip"   type="text" placeholder="" style="display: none;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-info" id="save_net_device" onclick="save_net_device();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel">
+         <button type="button" class="btn btn-info"    onclick="add_net_device();">添加</button>
+         <button type="button" class="btn btn-primary" onclick="edit_net_device();">编辑</button>
+         <button type="button" class="btn btn-danger"  onclick="del_net_device();">删除</button>
+
+         <div class="pull-right">
+             <button type="button" class="btn btn-success"  onclick="gen_yaml();">生成监控配置文件</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-default">
+          <table id="netdevice" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>网络设备类型</th>
+                    <th>网络设备IP地址</th>
+                    <th>网络设备MAC地址</th>
+                    <th>备注</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in recs %}
+                  <tr>
+                      <td>{{ rec.device_type }}</td>
+                      <td>{{ rec.device_ip   }}</td>
+                      <td>{{ rec.device_mac  }}</td>
+                      <td>{{ rec.memo        }}</td>
+                  </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>网络设备类型</th>
+                    <th>网络设备IP地址</th>
+                    <th>网络设备MAC地址</th>
+                    <th>备注</th>
+                </tr>
+            </tfoot>
+        </table>
+      </div>
+   </div>
+</div>
+
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript" language="javascript">
+var table1;
+
+function gen_yaml()
+{
+    url = "/portal/config/yaml/generator";
+    postdata = {}
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            window.location.href = "/portal/config/prometheus";
+        }
+    });
+}
+
+function save_net_device()
+{
+    var action = $('#netdevice_modal .action').text();
+    if (action == "add" )
+    {
+        url = "/portal/api/1.0/netdevice/add";
+        postdata = {
+            'net_device_type' : $('#new_net_device_type').val(),
+            'net_device_ip'   : $('#new_net_device_ip').val(),
+            'net_device_mac'  : $('#new_net_device_mac').val(),
+            'net_device_memo' : $('#new_net_device_memo').val(),
+        }
+    }
+    if (action == "edit")
+    {
+        url = "/portal/api/1.0/netdevice/edit";
+        postdata = {
+            'old_net_device_ip' : $('#old_net_device_ip').val(),
+            'new_net_device_type' : $('#new_net_device_type').val(),
+            'new_net_device_ip'   : $('#new_net_device_ip').val(),
+            'new_net_device_mac'  : $('#new_net_device_mac').val(),
+            'new_net_device_memo' : $('#new_net_device_memo').val(),
+        }
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#netdevice_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#netdevice_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function add_net_device()
+{
+    $('#netdevice_modal .action').text("add");
+    $('#net_device_title').text("输入新的网络设备信息");
+    $('.newdata').val("");
+    $('#netdevice_modal').modal('show');
+}
+
+function edit_net_device()
+{
+    $('#netdevice_modal .action').text("edit");
+    $('#net_device_title').text("编辑网络设备信息");
+
+    var data = table1.row('.selected').data();
+    $('#old_net_device_ip').val(data[1]);
+
+    $('#new_net_device_type').val(data[0]);
+    $('#new_net_device_ip').val(data[1]);
+    $('#new_net_device_mac').val(data[2]);
+    $('#new_net_device_memo').val(data[3]);
+
+    $('#netdevice_modal').modal('show');
+}
+
+function del_net_device()
+{
+    if (confirm('你确定要删除这条记录吗？')) {
+        url = "/portal/api/1.0/netdevice/del";
+        var data = table1.row('.selected').data();
+        var delete_record = {
+            "device_ip" : data[1],
+        };
+
+        $.post(url, delete_record, function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+                items[key] = val;
+            });
+            if ( items['Result'] != 'OK' ) {
+                alert(items['error']);
+                return ;
+            } else {
+                location.reload();
+            }
+        });
+    }
+}
+
+$(document).ready(function() {
+    $(".btn-primary").hide();
+    $(".btn-danger").hide();
+
+    table1 = $('#netdevice').DataTable({
+        language: {
+                "sProcessing":   "处理中...",
+                "sLengthMenu":   "显示 _MENU_ 项结果",
+                "sZeroRecords":  "没有匹配结果",
+                "sInfo":         "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty":    "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix":  "",
+                "sSearch":       "搜索:",
+                "sUrl":          "",
+                "sEmptyTable":     "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands":  ",",
+                "oPaginate": {
+                    "sFirst":    "首页",
+                    "sPrevious": "上页",
+                    "sNext":     "下页",
+                    "sLast":     "末页"
+                },
+                "oAria": {
+                    "sSortAscending":  ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+        },
+        "stateSave":   true,
+    });
+
+    $('#netdevice tbody').on( 'click', 'tr', function () {
+        if ( $(this).hasClass('selected') ) {
+            $(this).removeClass('selected');
+            $(".btn-primary").hide();
+            $(".btn-danger").hide();
+        } else {
+            table1.$('tr.selected').removeClass('selected');
+            $(this).addClass('selected');
+            $(".btn-primary").show();
+            $(".btn-danger").show();
+        }
+    } );
+});
+</script>
+{% endblock %}

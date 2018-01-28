@@ -1,0 +1,93 @@
+ALERT cpu_threshold_exceeded  
+  IF (100 * (1 - avg by(instacnce)(irate(node_cpu{mode='idle'}[5m])))) > 70
+  FOR 1m
+  LABELS {
+    urgency = "immediate",
+    title = "CPU占用率过高",
+  }
+  ANNOTATIONS {
+    summary = "服务器{{ $labels.instance }}上的CPU占用率太高了",
+    description = "服务器当前CPU占用率为{{ $value }}，超过了上限设置",
+  }
+
+ALERT net_device_down
+  IF up{job="snmp"} == 0
+  FOR 1m
+  LABELS {
+    urgency = "immediate",
+    title = "网络设备掉线",
+  }
+  ANNOTATIONS {
+    summary = "IP地址为{{ $labels.instance }}的网络设备无法连接",
+    description = "这个网络设备无法连接超过1分钟了，请及时检查",
+  }
+
+ALERT server_down
+  IF up{job="NODE"} == 0
+  FOR 1m
+  LABELS {
+    urgency = "immediate",
+    title = "服务器掉线",
+  }
+  ANNOTATIONS {
+    summary = "IP地址为{{ $labels.instance }}的服务器无法访问",
+    description = "这台服务器无法访问已经超过1分钟了，怀疑是服务器宕机，或者node_export服务有问题",
+  }
+
+ALERT windows_server_down
+  IF up{job="WIN_NODE"} == 0
+  FOR 1m
+  LABELS {
+    urgency = "immediate",
+    title = "服务器掉线",
+  }
+  ANNOTATIONS {
+    summary = "IP地址为{{ $labels.instance }}的服务器无法访问",
+    description = "这台Windows服务器无法访问已经超过1分钟了，怀疑是服务器宕机，或者node_export服务有问题",
+  }
+
+ALERT NodeRebootingFrequently
+  IF changes(node_boot_time{job="NODE"}[1h]) > 3
+  LABELS {
+    urgency = "immediate",
+    title = "服务器频繁重启",
+  }
+  ANNOTATIONS {
+    summary = "服务器{{$labels.instance}}重启的太频繁了", 
+    description = "这台服务器在过去1小时内重启了{{$value}}次,超过了3次的限制",
+  }
+
+ALERT DiskWillFillIn4Hours
+  IF predict_linear(node_filesystem_avail{job="NODE", fstype="ext4"}[1h], 4*3600) < 0
+  FOR 5m
+  LABELS {
+    urgency = "immediate",
+    title = "硬盘空间不够",
+  }
+  ANNOTATIONS {
+    summary = "服务器{{$labels.instance}}上的空余硬盘空间预计在4小时内会用完",
+    description = "挂载在服务器{{$labels.instance}}目录{{$labels.mountpoint}}上的分区{{$labels.device}}，其空余空间在4小时内会用完",
+  }
+
+ALERT HighErrorRate
+  IF sum by(job,path)(rate(http_requests_total{status=~"5.."}[1m])) /
+     sum by(job,path)(rate(http_requests_total[1m]))*100 > 1
+  LABELS {
+    urgency = "immediate",
+    title = "HTTP 5xx错误太多",
+  }
+  ANNOTATIONS {
+    summary = "web服务太多5xx错误",
+    description = "工作任务{{$labels.job}}中web服务{{$labels.path}}有{{$value}}%的5xx错误",
+  }
+
+#ALERT DailyTest
+#  IF vector(1) > 0
+#  FOR 1m
+#  ANNOTATIONS {
+#    summary = "daily alert test",
+#    description = "daily alert test"
+#  }
+
+
+# irate(node_network_receive_bytes[5m]) - irate(node_network_transmit_bytes[5m])

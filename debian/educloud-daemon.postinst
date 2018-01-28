@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]; then
+    chown -R luhya:luhya /usr/local/daemon || true
+    chmod -R 777 /usr/local/daemon || true
+
+    ln -s -f /usr/local/daemon/monitord/monitord_cmd_consumer    /usr/bin/monitord_cmd_consumer    || true
+fi

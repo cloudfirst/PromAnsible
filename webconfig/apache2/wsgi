@@ -1,0 +1,33 @@
+WSGIPythonPath    /usr/local/www/monitor
+<VirtualHost *:80>
+    LogLevel info
+    ServerName www.educloud.com
+    ServerAlias educloud.com
+    ServerAdmin webmaster@educloud.com
+
+    <Directory /storage/static/wechat/>
+        Require all granted
+    </Directory>
+
+    <Directory /usr/local/www/portal/static/portal/>
+        Require all granted
+    </Directory>
+
+    Alias /static/wechat/   /storage/static/wechat/
+    Alias /static/portal/   /usr/local/www/portal/static/portal/
+    Alias /static/admin     /usr/local/lib/python2.7/dist-packages/django/contrib/admin/static/admin
+
+    AddType text/cache-manifest .manifest
+    # ExpiresActive On
+    # ExpiresByType text/cache-manifest "access plus 0 seconds"
+
+    WSGIDaemonProcess educloud.com processes=2 threads=15 display-name=%{GROUP} python-path=/usr/local/www/monitor
+    WSGIProcessGroup educloud.com
+    WSGIScriptAlias / /usr/local/www/monitor/wsgi.py
+
+    <Directory /usr/local/www/monitor>
+    <Files wsgi.py>
+        Require all granted
+    </Files>
+    </Directory>
+</VirtualHost>

@@ -1,0 +1,41 @@
+#simple.yml
+global:
+  # ResolveTimeout is the time after which an alert is declared resolved
+  # if it has not been updated.
+  resolve_timeout: 1m
+  smtp_smarthost: 'localhost:25'
+  smtp_from: 'alertmanager@example.org'
+  smtp_auth_username: 'alertmanager'
+  smtp_auth_password: 'password'
+
+  slack_api_url: ""
+  pagerduty_url: ""
+  opsgenie_api_host: ""
+  hipchat_url: ""
+  hipchat_auth_token: ""
+
+route:
+  group_by: ['alertname']
+  # How long to initially wait to send a notification for a group
+  # of alerts. Allows to wait for an inhibiting alert to arrive or collect
+  # more initial alerts for the same group. (Usually ~0s to few minutes.)
+  group_wait: 1s  # delay 5s to send alert
+
+  # How long to wait before sending a notification about new alerts that
+  # are added to a group of alerts for which an initial notification has
+  # already been sent. (Usually ~5min or more.)
+  group_interval: 5m
+
+  # How long to wait before sending a notification again if it has already
+  # been sent successfully for an alert. (Usually ~3h or more).
+  repeat_interval: 1h
+  receiver: luhya
+
+receivers:
+- name: 'luhya'
+  webhook_configs:
+  - url: 'http://127.0.0.1/portal/api/1.0/alert'
+    # Whether or not to notify about resolved alerts.
+    send_resolved: true
+  email_configs:
+  - to: 'admin@com.cn'

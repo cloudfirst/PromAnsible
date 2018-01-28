@@ -1,0 +1,30 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="{% static "portal/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "portal/css/sb-admin-2.css" %}" rel="stylesheet">
+    <link href="{% static "portal/font-awesome-4.1.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+
+    <script src="{% static "portal/js/jquery-3.2.1.min.js" %}"></script>
+    <script src="{% static "portal/js/bootstrap.min.js" %}"></script>
+
+
+    {% block myjavascript %}
+    {% endblock %}
+
+    <title>{{ pagetitle }}</title>
+</head>
+<body>
+    {% block myform %}
+    {% endblock %}
+</body>
+</html>

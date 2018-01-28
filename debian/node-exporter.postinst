@@ -1,0 +1,11 @@
+#!/bin/bash -e
+
+if [ "$1" = "configure" ]; then
+    chown -R luhya:luhya /usr/local/exporter || true
+    chmod -R 777 /usr/local/exporter || true
+
+    ln -s -f /usr/local/exporter/node-exporter/node_exporter     /usr/bin/node_exporter     || true
+    
+    mkdir -p /var/log/exporter
+    touch /var/log/exporter/node_exporter.log
+fi

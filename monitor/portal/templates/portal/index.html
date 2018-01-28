@@ -1,0 +1,55 @@
+{% extends "portal/portal_template.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<div class="section section-white">
+	    	<div class="container">
+	    		<h2>监控管理服务</h2>
+				<div class="row">
+					<div class="col-md-4 col-sm-6">
+						<div class="portfolio-item">
+							<div class="portfolio-image">
+								<script language="JavaScript">
+									document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':3000' + window.location.pathname + '" ><img src="{% static "portal/img/monitor-systems.png" %}" ></a> ' );
+								</script>
+							</div>
+							<div class="portfolio-info">
+								<ul>
+									<li class="portfolio-project-name">自动化监控</li>
+									<li></li>
+									<li class="read-more">
+										<script language="JavaScript">
+											document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':3000' + window.location.pathname + '" class="btn">进入</a> ' );
+										</script>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 col-sm-6">
+						<div class="portfolio-item">
+							<div class="portfolio-image">
+								<a href="/portal/admlogin"><img src="{% static "portal/img/management-systems.jpg" %}" ></a>
+							</div>
+							<div class="portfolio-info">
+								<ul>
+									<li class="portfolio-project-name">自动化管理</li>
+									<li></li>
+									<li class="read-more"><a href="/portal/admlogin" class="btn">进入</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+{% endblock %}
+
+{% block myjs %}
+
+{% endblock %}

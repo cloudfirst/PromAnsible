@@ -1,0 +1,203 @@
+{% extends "portal/manage_template.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block mycss %}
+<link rel="stylesheet" href="{% static "portal/jquery-upload-file/css/uploadfile.css" %}">
+{% endblock %}
+
+{% block content %}
+<!-- Modal for device type -->
+<div class="modal fade" id="wechat_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="wechat_title"></h4>
+      </div>
+      <div class="modal-body">
+          <label>企业ID(CorpID)</label>
+          <input class="form-control" id="new_corp_id" type="text" placeholder="">
+          <label>报警应用ID(AgentId)</label>
+          <input class="form-control" id="new_app_id" type="number" min="0" placeholder="">
+          <label>报警应用密钥(Secret)</label>
+          <input class="form-control" id="new_app_secret" type="text" placeholder="">
+          <label>报警信息接收人(成员帐号)</label>
+          <input class="form-control" id="new_user_ids" type="text" placeholder="">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" id="save_wechat" onclick="save_wechat();">保存</button>
+          <div class="alert alert-success" style="display: none;">保存成功</div>
+          <div class="alert alert-danger"  style="display: none;">保存失败</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+   <div class="col-lg-12">
+
+       <button type="button" class="btn btn-success" onclick="test_wechat();">测试微信报警配置</button>
+
+       <div class="pull-right">
+         <a href="https://work.weixin.qq.com/wework_admin/register_wx?from=myhome">如何申请企业微信号？</a>
+         <a href="http://work.weixin.qq.com/?from=qyh_redirect">登录企业微信号</a>
+       </div>
+
+       <div class="panel panel-default">
+           <ul class="timeline">
+                <li>
+                    <div class="timeline-badge"><i class="fa fa-check"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">二维码</h4>
+                        </div>
+                        <div class="timeline-body">
+                            <img src="/static/wechat/erweima.png?cache=none" alt="点击“上传”按钮上传二维码图片">
+                            <hr>
+                            <p>使用微信扫描二维码直接关注</p>
+                            <div id="fileuploader">上传</div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge warning"><i class="fa fa-credit-card"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">企业ID(CorpID) <button type="button" class="btn btn-primary btn-xs edit">编辑</button></h4>
+                        </div>
+                        <div class="timeline-body">
+                            <input class="form-control" type="text" placeholder="" disabled="" id="corp_id">
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge danger"><i class="fa fa-bomb"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">报警应用ID(AgentId) <button type="button" class="btn btn-primary btn-xs edit">编辑</button></h4>
+                        </div>
+                        <div class="timeline-body">
+                            <input class="form-control" type="number" min="0"  placeholder="" disabled="" id="app_id">
+                        </div>
+                    </div>
+                </li>
+                <li >
+                    <div class="timeline-badge info"><i class="fa fa-save"></i></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">报警应用密钥(Secret) <button type="button" class="btn btn-primary btn-xs edit">编辑</button></h4>
+                        </div>
+                        <div class="timeline-body">
+                            <input class="form-control" type="text" placeholder="" disabled="" id="app_secret">
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="timeline-badge success"><i class="fa fa-graduation-cap"></i></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 class="timeline-title">报警信息接收人(成员帐号) <button type="button" class="btn btn-primary btn-xs edit">编辑</button></h4>
+                        </div>
+                        <div class="timeline-body">
+                            <input class="form-control" type="text" placeholder="" disabled="" id="user_ids">
+                            <hr>
+                            <p>说明:账户之间用逗号隔开，例如 zhangshan,lisi,wangwu</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+       </div>
+</div>
+{% endblock %}
+
+{% block myjs %}
+<script src="{% static "portal/jquery-upload-file/js/jquery.uploadfile.min.js" %}" ></script>
+<script type="text/javascript" language="javascript">
+function test_wechat()
+{
+    url = "/portal/api/1.0/alertbyansible";
+    postdata = {
+         "role":        "测试微信报警功能",
+         "role_desc":   "这是一条测试消息，测试企业微信报警功能各参数是否设置正确，请忽略它。",
+         "time":        Date(),
+         "targets":     "不存在",
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            alert("企业微信测试警报发生成功！");
+        } else {
+            alert("企业微信测试警报发生失败！");
+        }
+    });
+}
+
+function save_wechat()
+{
+    url = "/portal/api/1.0/wechat/edit";
+    postdata = {
+        'corp_id'    : $('#new_corp_id').val(),
+        'app_id'     : $('#new_app_id').val(),
+        'app_secret' : $('#new_app_secret').val(),
+        'user_ids'   : $('#new_user_ids').val(),
+    }
+    $.post(url, postdata, function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items[key] = val;
+        });
+        if ( items['Result'] == 'OK' ) {
+            $('#wechat_modal .alert-success').css("display", "block");
+            location.reload();
+        } else {
+            $('#wechat_modal .alert-danger').css("display", "block");
+        }
+    });
+}
+
+function edit_wechat_para() {
+    $('#wechat_title').text("设置微信企业号参数");
+    $('#new_corp_id').val($("#corp_id").val());
+    $('#new_app_id').val(Number($("#app_id").val()));
+    $('#new_app_secret').val($("#app_secret").val());
+    $('#new_user_ids').val($("#user_ids").val());
+    $('#wechat_modal').modal('show');
+}
+
+$(document).ready(function() {
+    $('.edit').on( 'click',  function () {
+        edit_wechat_para();
+    });
+
+    $("#fileuploader").uploadFile({
+        url:        "/portal/api/1.0/wechat/upload",
+        multiple:   false,
+        dragDrop:   false,
+        maxFileCount:1,
+        fileName:   "myfile",
+        uploadStr:  "上传",
+        returnType:"json",
+        onSuccess:function(files,data,xhr,pd)
+        {
+            location.reload();
+        },
+	});
+
+    if ({{ bconfigured }} == 1 )
+    {
+        $("#corp_id").val("{{ data.corp_id}}");
+        $("#app_id").val({{ data.app_id}});
+        $("#app_secret").val("{{ data.app_secret}}");
+        $("#user_ids").val("{{ data.user_ids}}");
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "portal/wizard_template.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block content %}
+<div id="smartwizard">
+    <ul>
+        <li><a href="#step-1">步骤1<br /><small>选择运维对象类别</small></a></li>
+        <li><a href="#step-2">步骤2<br /><small>选择目标对象</small></a></li>
+    </ul>
+
+    <div>
+        <div id="step-1" class="">
+            <div class="form-group">
+                <label></label>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" id="or_net" value="net_device" checked="" onclick="search_table1('net_device')">网络设备
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" id="or_server" value="server_device" onclick="search_table1('server_device')">服务器
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div id="step-2" class="">
+            <div class="row show-grid">
+                <div class="col-xs-6">
+                    <table id="stype"   class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>选择类别</th>
+                                <th>选择类型</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for rec in ltable %}
+                          <tr>
+                              <td>{{ rec.category }}</td>
+                              <td>{{ rec.type }}</td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xs-6">
+                    <table id="sentity" class="display" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>选择类型</th>
+                                <th>选择实例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for rec in rtable %}
+                          <tr>
+                              <td>{{ rec.type }}</td>
+                              <td>{{ rec.ip }}</td>
+                          </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript">
+        var table1, table2;
+
+        function routine_run_once()
+        {
+            //show_log_window();
+
+            var post_data;
+            var t1 = table1.row('.selected').data();
+            var t2 = table2.row('.selected').data();
+            if ( t2 == undefined) {
+                t2 = ["", "all"];
+            }
+            post_data = {
+                'op'   :  '{{ title }}',
+                'group':   t1[1],
+                'entity':  t2[1],
+            }
+
+            var url = "/portal/api/1.0/ansible/routine/run_once";
+            $.post(url, post_data, function (data) {
+                var items = [];
+                $.each(data, function (key, val) {
+                    items[key] = val;
+                });
+                if ( items['Result'] != 'OK' ) {
+                    alert(items['error']);
+                    return ;
+                }
+                window.close();
+            });
+
+        }
+
+        function search_table1(filter)
+        {
+            table1.search(filter).draw();
+            $('#stype tbody tr:eq(0)').click();
+        }
+
+        $(document).ready(function()
+        {
+          $('#smartwizard').smartWizard
+          ({
+            lang:
+            {
+                next: '下一步',
+                previous: '前一步'
+            },
+            theme: 'arrows',
+            keyNavigation:true,
+            autoAdjustHeight:true,
+            transitionEffect: 'fade',
+            transitionSpeed: '400',
+            toolbarSettings: {
+                toolbarPosition: 'bottom', // none, top, bottom, both
+                toolbarButtonPosition: 'right', // left, right
+                showNextButton: true, // show/hide a Next button
+                showPreviousButton: true, // show/hide a Previous button
+                toolbarExtraButtons:
+                [
+                    $('<button></button>').text('完成')
+                                  .addClass('btn btn-info')
+                                  .on('click', function(){
+                                        routine_run_once();
+                                  }),
+                    $('<button></button>').text('取消')
+                                  .addClass('btn btn-danger')
+                                  .on('click', function(){
+                                        window.close();
+                                  })
+                ]
+            },
+          });
+
+          table1 = $('#stype').DataTable({
+                columnDefs: [
+                    {
+                        "targets": [ 0 ],
+                        "visible": false,
+                    },
+                ],
+                language: {
+                    "sEmptyTable":     "表中数据为空",
+                },
+                "dom": 'lrtip',
+                //"searching": false,
+                "paging":    false,
+                "ordering":  false,
+                "info":      false,
+          });
+
+          table2 = $('#sentity').DataTable({
+                columnDefs: [
+                    {
+                        "targets": [ 0 ],
+                        "visible": false,
+                    },
+                ],
+                language: {
+                    "sEmptyTable":     "表中数据为空",
+                    "sZeroRecords":    "没有匹配结果",
+                },
+                "dom": 'lrtip',
+                //"searching": false,
+                "paging":    false,
+                "ordering":  false,
+                "info":      false,
+          });
+
+          $('#sentity tbody').on( 'click', 'tr', function () {
+                if ( $(this).hasClass('selected') ) {
+                    $(this).removeClass('selected');
+                } else {
+                    table2.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+          });
+
+          $('#stype tbody').on( 'click', 'tr', function () {
+                if ( $(this).hasClass('selected') ) {
+                    $(this).removeClass('selected');
+                } else {
+                    table1.$('tr.selected').removeClass('selected');
+                    $(this).addClass('selected');
+                }
+                // ToDO: filter table2 data to display
+                var data = table1.row('.selected').data();
+                table2.search(data[1]).draw();
+          });
+
+          table1.search('net_device').draw();
+          $('#stype tbody tr:eq(0)').click();
+        });
+</script>
+{% endblock %}

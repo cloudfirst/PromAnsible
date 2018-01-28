@@ -1,0 +1,6 @@
+ControlMaster auto
+ControlPath /tmp/ssh_mux_%h_%p_%r
+ControlPersist yes
+Compression yes
+Host *
+   StrictHostKeyChecking no
