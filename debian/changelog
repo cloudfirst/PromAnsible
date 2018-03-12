@@ -1,13 +1,13 @@
-educloud-monitor (1.1) lucid; urgency=low
+promansible-monitor (1.1) lucid; urgency=low
 
   [ Thomas Li ]
   * build to support windows.
 
- -- Signing Key (Thomas Li) <package@educloud.com>  Tue, 13 July 2017 02:04:53 -0400
+ -- Signing Key (Thomas Li) <package@promansible.io>  Tue, 13 July 2017 02:04:53 -0400
 
-educloud-monitor (1.0) lucid; urgency=low
+promansible-monitor (1.0) lucid; urgency=low
 
   [ Thomas Li ]
   * create debian package
 
- -- Signing Key (Thomas Li) <package@educloud.com>  Tue, 13 July 2017 02:04:53 -0400
+ -- Signing Key (Thomas Li) <package@promansible.io>  Tue, 13 July 2017 02:04:53 -0400

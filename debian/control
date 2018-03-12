@@ -1,4 +1,4 @@
-Source: educloud-monitor
+Source: promansible-monitor
 Section: python
 Priority: optional
 Maintainer: thomas.li  <libiao.2005@gmail.com>
@@ -6,14 +6,14 @@ Build-Depends:
 Homepage:
 Standards-Version: 3.8.3
 
-Package: educloud-monitor
+Package: promansible-monitor
 Architecture: all
 Depends:  mysql-server, libmysqld-dev, libmysqlclient-dev, memcached, libmemcached-tools, apache2, libapache2-mod-wsgi, python2.7, python-pip, python-dev, openssl, libssl-dev, libffi-dev, python-yaml, ifstat, sysstat, sudo, openssh-server, sshfs, sshpass, iperf, iotop, supervisor, libzmq3-dev, git, ansible
-Description: educloud-monitor basic package
+Description: promansible-monitor basic package
 
 Package: prometheus-server
 Architecture: all
-Depends: educloud-monitor
+Depends: promansible-monitor
 Description: prometheus daemon package
 
 Package: alertman-server
@@ -31,15 +31,15 @@ Architecture: all
 Depends: prometheus-server
 Description: snmp exporter package
 
-Package: educloud-wtee
+Package: promansible-wtee
 Architecture: all
-Depends: educloud-monitor
+Depends: promansible-monitor
 Description: tail wtee ws
 
-Package: educloud-daemon
+Package: promansible-daemon
 Architecture: all
-Depends: educloud-monitor
-Description: backend of educloud-monitor
+Depends: promansible-monitor
+Description: backend of promansible-monitor
 
 Package: node-exporter
 Architecture: all

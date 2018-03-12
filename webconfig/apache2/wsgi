@@ -1,9 +1,9 @@
 WSGIPythonPath    /usr/local/www/monitor
 <VirtualHost *:80>
     LogLevel info
-    ServerName www.educloud.com
-    ServerAlias educloud.com
-    ServerAdmin webmaster@educloud.com
+    ServerName www.promansible.io
+    ServerAlias promansible.io
+    ServerAdmin webmaster@promansible.io
 
     <Directory /storage/static/wechat/>
         Require all granted
@@ -21,8 +21,8 @@ WSGIPythonPath    /usr/local/www/monitor
     # ExpiresActive On
     # ExpiresByType text/cache-manifest "access plus 0 seconds"
 
-    WSGIDaemonProcess educloud.com processes=2 threads=15 display-name=%{GROUP} python-path=/usr/local/www/monitor
-    WSGIProcessGroup educloud.com
+    WSGIDaemonProcess promansible.io processes=2 threads=15 display-name=%{GROUP} python-path=/usr/local/www/monitor
+    WSGIProcessGroup promansible.io
     WSGIScriptAlias / /usr/local/www/monitor/wsgi.py
 
     <Directory /usr/local/www/monitor>

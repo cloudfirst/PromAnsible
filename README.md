@@ -1,5 +1,5 @@
-# educloud-monitor
-designed to monitor (real-time) eduCloud system, with the help of prometheus, grafana,and Ansible, FAI
+# promansible-monitor
+designed to monitor (real-time) promansible system, with the help of prometheus, grafana,and Ansible, FAI
 
 The whole work flow looks like below:
 
@@ -14,6 +14,7 @@ The whole work flow looks like below:
 
 ## II integrate ansible with prometheus & alertmanage
 2.0 assuming the existence of ansible playbook
+```
 .
 ├── example.txt
 ├── geninventory.py
@@ -49,7 +50,8 @@ The whole work flow looks like below:
 │           └── restart_pptp_vpn
 │               └── README.md
 └── README.md
-
+```
+```
 cmdline:
    ansible-playbook <task>            -i <inventory_path>  -u <user> -K --extra-vars "user=<user>"
    ansible-playbook playbook/ping.yml -i ./geninventory.py -u luhya -k
@@ -64,6 +66,7 @@ ping.yml   # task file name
 $ ./geninventory.py --list  # dynamic inventory generation
 {'monitor-dev': ['192.168.56.101']}
 
+```
 
 2.1 Daily routing ansible-playbook
 for each group of servers, we could design a serials daily routing tasks as below

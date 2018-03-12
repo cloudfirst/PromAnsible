@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['monitord_cmd_consumer.py'],
-             pathex=['/home/luhya/Documents/educloud-monitor/daemon/monitord'],
+             pathex=['/home/luhya/Documents/PromAnsible/daemon/monitord'],
              binaries=[],
              datas=[],
              hiddenimports=[],
