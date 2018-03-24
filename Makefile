@@ -30,8 +30,11 @@ clean:
 	rm -fr $(PROMANSIBLE_WTEE)       || true
 	rm -fr $(PROMANSIBLE_DAEMON)     || true
 	rm -fr $(NODE_EXPORTER)  || true
-	rm -fr daemon/monitord/build || true 
+	rm -fr daemon/monitord/build || true
 	rm -fr daemon/monitord/dist || true
+publish:
+	rm $(CURDIR)/../promansible-Install/playbook/roles/monitor/files/*.deb  || true
+	cp $(CURDIR)/../*.deb 	$(CURDIR)/../promansible-Install/playbook/roles/monitor/files   || true
 install:
 	#####################
 	#     PROMANSIBLE_MONITOR   #
@@ -105,7 +108,7 @@ install:
 
 	######################
 	#     PROMANSIBLE_SNMP       #
-	###################### 
+	######################
 	install -d $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp
 	cd $(CURDIR)/daemon/snmp/ && ./init.sh
 	tar vxf $(CURDIR)/daemon/snmp/snmp_exporter.tar.gz --strip 1 -C $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp/
