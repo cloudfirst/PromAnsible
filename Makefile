@@ -8,7 +8,7 @@ PROMANSIBLE_MONITOR     =debian/promansible-monitor
 PROMANSIBLE_GRAFANA     =debian/grafana-server
 PROMANSIBLE_PROMETHEUS  =debian/prometheus-server
 PROMANSIBLE_ALERTMAN    =debian/alertman-server
-PROMANSIBLE_SNMP	    =debian/snmp-exporter
+PROMANSIBLE_SNMP	=debian/snmp-exporter
 PROMANSIBLE_WTEE        =debian/promansible-wtee
 PROMANSIBLE_DAEMON      =debian/promansible-daemon
 
@@ -35,10 +35,11 @@ clean:
 publish:
 	rm $(CURDIR)/../promansible-Install/playbook/roles/monitor/files/*.deb  || true
 	cp $(CURDIR)/../*.deb 	$(CURDIR)/../promansible-Install/playbook/roles/monitor/files   || true
+	cp $(CURDIR)/../node-exporter*.deb   $(CURDIR)/../sample-ansible-script-for-promansible/playbook/routine/roles/install-node-exporter/files/ || true
 install:
-	#####################
+	#############################
 	#     PROMANSIBLE_MONITOR   #
-	#####################
+	#############################
 	install -d $(PROMANSIBLE_MONITOR)/usr/local/www/monitor
 	cp $(CURDIR)/monitor/*.py                               $(PROMANSIBLE_MONITOR)/usr/local/www/
 
@@ -76,9 +77,9 @@ install:
 	install -d $(PROMANSIBLE_MONITOR)/storage/ansible
 	install -d $(PROMANSIBLE_MONITOR)/storage/log
 
-	#########################
+	#################################
 	#     PROMANSIBLE_PROMETHEUS    #
-	#########################
+	#################################
 	install -d $(PROMANSIBLE_PROMETHEUS)/usr/local/daemon/prometheus
 	cd $(CURDIR)/daemon/prometheus/ && ./init.sh
 	tar vxf $(CURDIR)/daemon/prometheus/prometheus.tar.gz --strip 1 -C $(PROMANSIBLE_PROMETHEUS)/usr/local/daemon/prometheus/
@@ -86,9 +87,9 @@ install:
 	install -d $(PROMANSIBLE_PROMETHEUS)/etc/supervisor/conf.d
 	cp $(CURDIR)/daemon/prometheus/supervisor/prometheus.conf   $(PROMANSIBLE_PROMETHEUS)/etc/supervisor/conf.d/
 
-	#########################
+	#################################
 	#     PROMANSIBLE_ALERTMAN      #
-	#########################
+	#################################
 	install -d $(PROMANSIBLE_ALERTMAN)/usr/local/daemon/alertman
 	cd $(CURDIR)/daemon/alertman/ && ./init.sh
 	tar vxf $(CURDIR)/daemon/alertman/alertmanager.tar.gz --strip 1 -C $(PROMANSIBLE_ALERTMAN)/usr/local/daemon/alertman/
@@ -96,9 +97,9 @@ install:
 	install -d $(PROMANSIBLE_ALERTMAN)/etc/supervisor/conf.d
 	cp $(CURDIR)/daemon/alertman/supervisor/alertman.conf   $(PROMANSIBLE_ALERTMAN)/etc/supervisor/conf.d/
 
-	######################
+	##############################
 	#     PROMANSIBLE_GRAFANA    #
-	######################
+	##############################
 	install -d $(PROMANSIBLE_GRAFANA)/usr/local/daemon/grafana
 	cd $(CURDIR)/daemon/grafana/ && ./init.sh
 	tar vxf $(CURDIR)/daemon/grafana/grafana.tar.gz --strip 1 -C $(PROMANSIBLE_GRAFANA)/usr/local/daemon/grafana/
@@ -106,9 +107,9 @@ install:
 	install -d $(PROMANSIBLE_GRAFANA)/etc/supervisor/conf.d
 	cp $(CURDIR)/daemon/grafana/supervisor/grafana.conf   $(PROMANSIBLE_GRAFANA)/etc/supervisor/conf.d/
 
-	######################
+	##############################
 	#     PROMANSIBLE_SNMP       #
-	######################
+	##############################
 	install -d $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp
 	cd $(CURDIR)/daemon/snmp/ && ./init.sh
 	tar vxf $(CURDIR)/daemon/snmp/snmp_exporter.tar.gz --strip 1 -C $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp/
@@ -116,9 +117,9 @@ install:
 	install -d $(PROMANSIBLE_SNMP)/etc/supervisor/conf.d
 	cp $(CURDIR)/daemon/snmp/supervisor/snmp-exporter.conf   $(PROMANSIBLE_SNMP)/etc/supervisor/conf.d/
 
-	######################
+	##############################
 	#     PROMANSIBLE_WTEE       #
-	######################
+	##############################
 	install -d $(PROMANSIBLE_WTEE)/usr/bin/
 	cp $(CURDIR)/daemon/wtee/wtee-server            $(PROMANSIBLE_WTEE)/usr/bin/
 
@@ -126,9 +127,9 @@ install:
 	cp $(CURDIR)/daemon/wtee/supervisor/wtee.conf   $(PROMANSIBLE_WTEE)/etc/supervisor/conf.d/
 
 
-	########################
+	################################
 	#     PROMANSIBLE_DAEMON       #
-	########################
+	################################
 	install -d $(PROMANSIBLE_DAEMON)/usr/local/daemon/monitord
 	cd $(CURDIR)/daemon/monitord && sudo -u luhya pyinstaller monitord_cmd_consumer.py -F -s
 	cp $(CURDIR)/daemon/monitord/dist/monitord_cmd_consumer  $(PROMANSIBLE_DAEMON)/usr/local/daemon/monitord/
