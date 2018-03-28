@@ -112,7 +112,7 @@ install:
 	##############################
 	install -d $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp
 	cd $(CURDIR)/daemon/snmp/ && ./init.sh
-	tar vxf $(CURDIR)/daemon/snmp/snmp_exporter.tar.gz --strip 1 -C $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp/
+	tar vxf $(CURDIR)/daemon/snmp/snmp.tar.gz --strip 1 -C $(PROMANSIBLE_SNMP)/usr/local/daemon/snmp/
 
 	install -d $(PROMANSIBLE_SNMP)/etc/supervisor/conf.d
 	cp $(CURDIR)/daemon/snmp/supervisor/snmp-exporter.conf   $(PROMANSIBLE_SNMP)/etc/supervisor/conf.d/

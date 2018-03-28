@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ -e ./snmp_exporter.tar.gz ]
+if [ -e ./snmp.tar.gz ]
 then
 	echo -e "File exists"
 else
