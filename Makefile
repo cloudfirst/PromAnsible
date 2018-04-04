@@ -32,6 +32,7 @@ clean:
 	rm -fr $(NODE_EXPORTER)  || true
 	rm -fr daemon/monitord/build || true
 	rm -fr daemon/monitord/dist || true
+	find ./ -name *.pyc -delete || true
 publish:
 	rm $(CURDIR)/../promansible-Install/playbook/roles/monitor/files/*.deb  || true
 	cp $(CURDIR)/../*.deb 	$(CURDIR)/../promansible-Install/playbook/roles/monitor/files   || true

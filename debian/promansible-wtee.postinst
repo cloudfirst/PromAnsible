@@ -1,14 +1,1 @@
 #!/bin/bash -e
-
-if [ "$1" = "configure" ]; then
-   ##############################
-   # install all python libraries
-   #############################
-   pip install /usr/local/webconfig/pip/wtee/singledispatch-3.4.0.3-py2.py3-none-any.whl
-   pip install /usr/local/webconfig/pip/wtee/backports.ssl_match_hostname-3.5.0.1.tar.gz 
-   pip install /usr/local/webconfig/pip/wtee/certifi-2017.7.27.1-py2.py3-none-any.whl
-   pip install /usr/local/webconfig/pip/wtee/backports_abc-0.5-py2.py3-none-any.whl
-   pip install /usr/local/webconfig/pip/wtee/tornado-4.5.2.tar.gz
-   pip install /usr/local/webconfig/pip/wtee/sockjs-tornado-1.0.3.tar.gz
-   pip install /usr/local/webconfig/pip/wtee/wtee-1.1.0-py2.py3-none-any.whl
-fi
