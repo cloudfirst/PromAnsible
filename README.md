@@ -13,9 +13,8 @@ PromAnsible能够
 - 提供了基于微信的报警功能模块
 - 可图形化定义报警后续处理模块
 
-
 # Architecture
-ignore
+[Arch-_Prom_Ansible.png](https://postimg.org/image/8g54i2osb/)
 
 # Requirements
 - OS: Ubuntu 16.04 Server 64bit
@@ -30,11 +29,7 @@ PromAnsible的运行依赖如下软件：
 
 
 # Build 
-编译环境需要安装如下
-- [PyInstaller](http://www.pyinstaller.org/)
-- [dpkg-buildpackage](http://man7.org/linux/man-pages/man1/dpkg-buildpackage.1.html)
-
-下载源代码后，运行dpkg-buildpackage命令即可得到生成好的deb包
+请参考[How to Build](https://github.com/cloudfirst/PromAnsible/wiki/How-to-Build)
 
 
 # Installation
