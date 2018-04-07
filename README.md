@@ -1,5 +1,54 @@
-# promansible-monitor
-designed to monitor (real-time) promansible system, with the help of prometheus, grafana,and Ansible, FAI
+# Goal and Philosophy
+PromAnsible的目标是为了中小企业的IT环境提供一个全自动化的运维管理工具，涵盖从系统性能指标实时监控，异常报警，和自动化报警处理等一条龙服务。
+
+同时，我们的开发目标也希望PromAnsible的应用门槛尽可能的低，无需专业的运维人员也能顺利安装部署和应用。因此在安装部署和应用方面，也尽量体现了自动化的思想。
+
+# Design Principle
+PromAnsible能够
+- 自动生成监控参数配置
+- 提供预定义好的监控图表
+- 提供预定义好的报警规则
+- 提供基于ansible的安装部署脚本
+- 提供基于ansible的，可定制的报警处理脚本sample
+- 提供了基于微信的报警功能模块
+- 可图形化定义报警后续处理模块
+
+
+# Architecture
+ignore
+
+# Requirements
+- OS: Ubuntu 16.04 Server 64bit
+- Python 2.7
+
+PromAnsible的运行依赖如下软件：
+- Django 1.11.3
+- MySQL 5.5
+- memcache
+- ZMQ
+- supervisor
+
+
+# Build 
+编译环境需要安装如下
+- [PyInstaller](http://www.pyinstaller.org/)
+- [dpkg-buildpackage](http://man7.org/linux/man-pages/man1/dpkg-buildpackage.1.html)
+
+下载源代码后，运行dpkg-buildpackage命令即可得到生成好的deb包
+
+
+# Installation
+
+# Usage
+
+
+# Reference
+
+
+# License
+Apache2 
+See COPYING to see the full text
+
 
 The whole work flow looks like below:
 
@@ -12,61 +61,7 @@ The whole work flow looks like below:
        /usr/local/daemon/grafana
        /usr/local/daemon/ansible
 
-## II integrate ansible with prometheus & alertmanage
-2.0 assuming the existence of ansible playbook
-```
-.
-├── example.txt
-├── geninventory.py
-├── playbook
-│   ├── alert
-│   │   └── roles
-│   │       ├── handle_cpu_threshold_exceeded
-│   │       │   └── README.md
-│   │       ├── handle_DiskWillFillIn4Hours
-│   │       │   └── README.md
-│   │       ├── handle_HighErrorRate
-│   │       │   └── README.md
-│   │       ├── handle_net_device_down
-│   │       │   └── README.md
-│   │       └── handle_server_down
-│   │           └── README.md
-│   └── routine
-│       └── roles
-│           ├── check_dns_sinobot_biz
-│           │   └── README.md
-│           ├── check_EXSi_port
-│           │   └── README.md
-│           ├── check_ftp_connect
-│           │   └── README.md
-│           ├── check_LAN_speed
-│           │   └── README.md
-│           ├── check_vpn_dns
-│           │   └── README.md
-│           ├── check_vpn_website_abroad_connect
-│           │   └── README.md
-│           ├── restart_l2tp_vpn
-│           │   └── README.md
-│           └── restart_pptp_vpn
-│               └── README.md
-└── README.md
-```
-```
-cmdline:
-   ansible-playbook <task>            -i <inventory_path>  -u <user> -K --extra-vars "user=<user>"
-   ansible-playbook playbook/ping.yml -i ./geninventory.py -u luhya -k
 
-
-ping.yml   # task file name
---------------
-- hosts: 192.168.56.101  # ip addr comes from alert message
-  roles:
-      - ping  # role name, namely what shoud be done in playbook/roles/ping/tasks/main.yml
-
-$ ./geninventory.py --list  # dynamic inventory generation
-{'monitor-dev': ['192.168.56.101']}
-
-```
 
 2.1 Daily routing ansible-playbook
 for each group of servers, we could design a serials daily routing tasks as below
