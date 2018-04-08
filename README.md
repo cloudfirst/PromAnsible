@@ -45,5 +45,5 @@ PromAnsible的运行依赖如下软件：
 
 # License
 Apache License 2.0
-See [COPYING](Apache License 2.0) to see the full text
 
+参见 [COPYING](Apache License 2.0) 
