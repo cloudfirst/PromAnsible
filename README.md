@@ -46,4 +46,4 @@ PromAnsible的运行依赖如下软件：
 # License
 Apache License 2.0
 
-参见 [COPYING](Apache License 2.0) 
+参见 [COPYING](https://github.com/cloudfirst/PromAnsible/blob/master/LICENSE) 
