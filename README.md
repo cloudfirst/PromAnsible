@@ -27,12 +27,12 @@ PromAnsible的运行依赖如下软件：
 - ZMQ
 - supervisor
 
-
 # Build 
 请参考[How to Build](https://github.com/cloudfirst/PromAnsible/wiki/How-to-Build)
 
-
 # Installation
+我们提供了基于ansible的安装脚本[promansible-Install](https://github.com/cloudfirst/promansible-Install)
+具体信息请参考[README.md](https://github.com/cloudfirst/promansible-Install/blob/master/README.md)
 
 # Usage
 
