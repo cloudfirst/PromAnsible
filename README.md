@@ -3,6 +3,8 @@ PromAnsible的目标是为了中小企业的IT环境提供一个全自动化的�
 
 同时，我们的开发目标也希望PromAnsible的应用门槛尽可能的低，无需专业的运维人员也能顺利安装部署和应用。因此在安装部署和应用方面，也尽量体现了自动化的思想。
 
+更多介绍，请查阅[Wiki](https://github.com/cloudfirst/PromAnsible/wiki/1-Overview)
+
 # Design Principle
 PromAnsible能够
 - 自动生成监控参数配置
