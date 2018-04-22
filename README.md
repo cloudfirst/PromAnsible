@@ -16,7 +16,7 @@ PromAnsible能够
 - 可图形化定义报警后续处理模块
 
 # Architecture
-![](https://s9.postimg.org/yjlopoo6n/arch-promansible.png)
+![](https://s5.postimg.cc/jf8g27i87/promansible-arch.png)
 
 # Requirements
 - OS: Ubuntu 16.04 Server 64bit
