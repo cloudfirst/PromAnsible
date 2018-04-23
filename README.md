@@ -30,7 +30,7 @@ PromAnsible的运行依赖如下软件：
 - supervisor
 
 # Build 
-请参考 [How to Build](https://github.com/cloudfirst/PromAnsible/wiki/How-to-Build)
+请参考 [How to Build](https://github.com/cloudfirst/PromAnsible/wiki/2-How-to-Build)
 
 # Installation
 我们提供了基于ansible的安装脚本 [promansible-Install](https://github.com/cloudfirst/promansible-Install)
@@ -38,7 +38,7 @@ PromAnsible的运行依赖如下软件：
 具体信息请参考 [README.md](https://github.com/cloudfirst/promansible-Install/blob/master/README.md)
 
 # Usage
-请参考 [How to use PromAnsible](https://github.com/cloudfirst/PromAnsible/wiki/How-to-use-PromAnsible)
+请参考 [How to use PromAnsible](https://github.com/cloudfirst/PromAnsible/wiki/3-How-to-use-PromAnsible-(Quick-Start))
 
 # Reference
 - 《SRE：Google运维解密》【美】Betsy Beyer（贝特西 拜尔）等
