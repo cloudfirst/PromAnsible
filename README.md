@@ -47,8 +47,10 @@ PromAnsible的运行依赖如下软件：
 
 # License
 Apache License 2.0
-
 参见 [COPYING](https://github.com/cloudfirst/PromAnsible/blob/master/LICENSE) 
+
+# Sponsor
+如果觉得这个repository对你有用，欢迎打赏！(点击页面右上角的粉色sponsor按钮)
 
 # 猜你可能感兴趣的
 - 下一代VPN(http://www.oxfold.cn), 通过纯软件的方式，帮助客户在互联网上创建只对授权员工可见的，面向公司专有的虚拟办公网络。加入到这个虚拟办公网络的设备和员工，彼此之间就像真正在办公室一样的互联互通。
